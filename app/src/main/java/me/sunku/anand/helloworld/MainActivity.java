@@ -8,6 +8,9 @@ import android.os.Bundle;
  * Created by anand on 06/08/16.
  */
 
+/* added to github with the below link
+* https://www.londonappdeveloper.com/how-to-use-git-hub-with-android-studio/
+* */
 public class MainActivity extends Activity{
 
     SQLiteDatabase db;
