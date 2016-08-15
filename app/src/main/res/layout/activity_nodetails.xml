@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:text="HabitName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/habitName"
+        android:layout_weight="0.09" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="reason title here"
+        android:ems="10"
+        android:id="@+id/editReason"
+        android:layout_weight="0.09" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:maxLines="4"
+        android:id="@+id/editNotReasonDetailText"
+        android:layout_weight="0.36"
+        android:text="detail content here" />
+
+    <Button
+        android:text="Update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onUpdateButtonClick"
+        android:id="@+id/update" />
+</LinearLayout>

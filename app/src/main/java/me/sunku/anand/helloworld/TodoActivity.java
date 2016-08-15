@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -80,23 +81,44 @@ public class TodoActivity extends ListActivity {
                 null,null,null,null,null);
 
         todoListAdapter = new SimpleCursorAdapter(this,
-                R.layout.todotask,cursor, new String[]{TodoListSQLHelper.COL1_TASK},
-                new int[]{R.id.todoTaskTV},0);
+                R.layout.todotask,cursor, new String[]{TodoListSQLHelper.COL1_TASK,TodoListSQLHelper._ID},
+                new int[]{R.id.todoTaskTV,R.id.todoId},0);
 
         this.setListAdapter(todoListAdapter);
     }
 
     public void onDoneButtonClick(View view){
         View v = (View) view.getParent();
-        TextView todoTV = (TextView) v.findViewById(R.id.todoTaskTV);
+        TextView todoTV = (TextView) v.findViewById(R.id.todoId);
         String todoTaskItem = todoTV.getText().toString();
 
+
         String deleteTodoItemSql = "DELETE FROM " + todoListSQLHelper.TABLE_NAME +
-                " WHERE " + TodoListSQLHelper.COL1_TASK + " = '" + todoTaskItem  + "'";
+                " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem  + "'";
 
         todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
         SQLiteDatabase sqlDB = todoListSQLHelper.getWritableDatabase();
         sqlDB.execSQL(deleteTodoItemSql);
         updateTodoList();
+    }
+
+    public void onNoDoneButtonClick(View view){
+        //i want to know the id and name of the habit
+        View v = (View) view.getParent();
+
+        TextView todoTV = (TextView) v.findViewById(R.id.todoId);
+        String todoTaskId = todoTV.getText().toString();
+
+        TextView todoTVText = (TextView) v.findViewById(R.id.todoTaskTV);
+        String todoTaskName = todoTVText.getText().toString();
+
+        // i would like to show no done details page here.
+        Intent i = new Intent(getApplicationContext(), NotDoneActivity.class);
+        i.putExtra("id", todoTaskId);
+        i.putExtra("taskName", todoTaskName);
+        // Set the request code to any code you like, you can identify the
+        // callback via this code
+        startActivity(i);
+
     }
 }
