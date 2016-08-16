@@ -4,4 +4,8 @@
 
     <item android:id="@+id/action_add_task"
         android:title="AddTask" />
+    <item android:id="@+id/action_backup_db"
+        android:title="BackupDbtest" />
+    <item android:id="@+id/action_backup_db_real"
+        android:title="BackupDbReal" />
 </menu>

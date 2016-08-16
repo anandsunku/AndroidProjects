@@ -10,6 +10,7 @@ import android.provider.BaseColumns;
  */
 
 public class TodoListSQLHelper extends SQLiteOpenHelper {
+
     public static final String DB_NAME = "me.sunku.anand.androidtodo";
     public static final String TABLE_NAME = "TODO_LIST";
     public static final String COL1_TASK = "todo";
