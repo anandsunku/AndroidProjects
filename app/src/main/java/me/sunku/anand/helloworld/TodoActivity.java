@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -186,23 +187,34 @@ public class TodoActivity extends ListActivity {
     }
 
     public void onDoneButtonClick(View view){
-        View v = (View) view.getParent();
+        SQLiteDatabase db;
+        View v = (View) view.getParent().getParent();
+
         TextView todoTV = (TextView) v.findViewById(R.id.todoId);
         String todoTaskItem = todoTV.getText().toString();
 
+        TextView todoTVText = (TextView) v.findViewById(R.id.todoTaskTV);
+        String todoTaskName = todoTVText.getText().toString();
 
-        String deleteTodoItemSql = "DELETE FROM " + todoListSQLHelper.TABLE_NAME +
-                " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem  + "'";
+        db = openOrCreateDatabase("me.sunku.anand.androidtodo", Context.MODE_PRIVATE,null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS DoneActivity(habitid VARCHAR, " +
+                "habitname VARCHAR, TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP );");
 
-        todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
-        SQLiteDatabase sqlDB = todoListSQLHelper.getWritableDatabase();
-        sqlDB.execSQL(deleteTodoItemSql);
+        String insertQueryStr;
+
+        insertQueryStr = "INSERT INTO DoneActivity VALUES('"+todoTaskItem+"',"+
+                "'"+todoTaskName+"'," +
+                "DATETIME('now'));";
+
+        // insert the log entry of done status
+        db.execSQL(insertQueryStr);
+
         updateTodoList();
     }
 
     public void onNoDoneButtonClick(View view){
         //i want to know the id and name of the habit
-        View v = (View) view.getParent();
+        View v = (View) view.getParent().getParent();
 
         TextView todoTV = (TextView) v.findViewById(R.id.todoId);
         String todoTaskId = todoTV.getText().toString();
@@ -219,4 +231,20 @@ public class TodoActivity extends ListActivity {
         startActivity(i);
 
     }
+
+    public void onDelButtonClick(View view){
+        View v = (View) view.getParent().getParent();
+        TextView todoTV = (TextView) v.findViewById(R.id.todoId);
+        String todoTaskItem = todoTV.getText().toString();
+
+        String deleteTodoItemSql = "DELETE FROM " + todoListSQLHelper.TABLE_NAME +
+                " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem  + "'";
+
+        todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
+        SQLiteDatabase sqlDB = todoListSQLHelper.getWritableDatabase();
+        sqlDB.execSQL(deleteTodoItemSql);
+        updateTodoList();
+    }
+
+
 }
