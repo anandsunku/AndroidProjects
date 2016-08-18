@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="reason title here"
         android:ems="10"
         android:id="@+id/editReason"
         android:layout_weight="0.09" />
@@ -27,8 +26,7 @@
         android:ems="10"
         android:maxLines="4"
         android:id="@+id/editNotReasonDetailText"
-        android:layout_weight="0.36"
-        android:text="detail content here" />
+        android:layout_weight="0.36"/>
 
     <Button
         android:text="Update"

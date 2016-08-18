@@ -53,6 +53,7 @@ public class NotDoneActivity extends Activity {
         db.execSQL(insertQueryStr);
 
         Intent i = new Intent();
+        i.putExtra("taskid",taskid);
         setResult(RESULT_OK,i);
         finish();
     }
