@@ -87,7 +87,28 @@ public class TodoActivity extends ListActivity {
 
                 todoTaskBuilder.create().show();
                 return true;
-            case R.id.action_backup_db:
+
+            case R.id.action_resetValues:
+
+                String upCntSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
+                        " SET " + todoListSQLHelper.COL2_DONE + " = 0";
+
+                todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
+                SQLiteDatabase sqlDB = todoListSQLHelper.getWritableDatabase();
+                sqlDB.execSQL(upCntSql);
+
+                upCntSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
+                        " SET " + todoListSQLHelper.COL3_NOTDONE + " = 0";
+                sqlDB.execSQL(upCntSql);
+
+                upCntSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
+                        " SET " + todoListSQLHelper.COL4_LASTOPERATION + " = ''";
+                sqlDB.execSQL(upCntSql);
+
+                updateTodoList();
+                return true;
+
+            case R.id.action_backup_db: // added for testing.
                 try {
                     File myFile = new File("mnt/sdcard/file.txt");
                     myFile.createNewFile();
