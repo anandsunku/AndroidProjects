@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.SimpleCursorAdapter;
@@ -73,6 +74,8 @@ public class TodoActivity extends ListActivity {
 
                         //write the To-do task input into database table
                         values.put(TodoListSQLHelper.COL1_TASK, todoTaskInput);
+                        values.put(TodoListSQLHelper.COL2_DONE, "0");
+                        values.put(TodoListSQLHelper.COL3_NOTDONE, "0");
                         sqLiteDatabase.insertWithOnConflict(TodoListSQLHelper.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
                         //update the To-do task list UI
@@ -180,7 +183,10 @@ public class TodoActivity extends ListActivity {
         SQLiteDatabase sqLiteDatabase = todoListSQLHelper.getReadableDatabase();
 
         final Cursor cursor = sqLiteDatabase.query(TodoListSQLHelper.TABLE_NAME,
-                new String[]{todoListSQLHelper._ID, TodoListSQLHelper.COL1_TASK,TodoListSQLHelper.COL4_LASTOPERATION},
+                new String[]{todoListSQLHelper._ID, TodoListSQLHelper.COL1_TASK,
+                        TodoListSQLHelper.COL4_LASTOPERATION,TodoListSQLHelper.COL2_DONE,
+                        TodoListSQLHelper.COL3_NOTDONE
+                },
                 null,null,null,null,null);
 
         todoListAdapter = new SimpleCursorAdapter(this,
@@ -204,6 +210,17 @@ public class TodoActivity extends ListActivity {
                             ((TextView)view).setTextColor(Color.BLACK);
                         }
                     }
+
+                    int donecol = cursor.getColumnIndex(TodoListSQLHelper.COL2_DONE);
+                    status = cursor.getString(donecol);
+                    Button btnComp = (Button)((View)view.getParent().getParent()).findViewById(R.id.completeBtn);
+                    btnComp.setText("Yes ("+status+")");
+
+                    int notdonecol = cursor.getColumnIndex(TodoListSQLHelper.COL3_NOTDONE);
+                    status = cursor.getString(notdonecol);
+                    Button btnNotComp = (Button)((View)view.getParent().getParent()).findViewById(R.id.noCompleteBtn);
+                    btnNotComp.setText("No ("+status+")");
+
                     return false;
                 }
                 return false;

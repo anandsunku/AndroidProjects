@@ -3,9 +3,19 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <item android:id="@+id/action_add_task"
-        android:title="AddTask" />
+        android:title="AddTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <item android:id="@+id/action_backup_db"
-        android:title="BackupDbtest" />
+        android:title="BackupDbtest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <item android:id="@+id/action_backup_db_real"
-        android:title="BackupDbReal" />
+        android:title="BackupDbReal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <item android:id="@+id/action_resetValues"
+        android:title="resetValues"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </menu>
