@@ -26,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,11 +42,13 @@ import java.io.OutputStreamWriter;
 public class TodoActivity extends ListActivity {
     private ListAdapter todoListAdapter;
     private TodoListSQLHelper todoListSQLHelper;
+    String whereClause;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
         verifyStoragePermissions(this);
+        whereClause = "";
         updateTodoList();
     }
 
@@ -74,8 +78,8 @@ public class TodoActivity extends ListActivity {
 
                         //write the To-do task input into database table
                         values.put(TodoListSQLHelper.COL1_TASK, todoTaskInput);
-                        values.put(TodoListSQLHelper.COL2_DONE, "0");
-                        values.put(TodoListSQLHelper.COL3_NOTDONE, "0");
+                        values.put(TodoListSQLHelper.COL3_DONE, "0");
+                        values.put(TodoListSQLHelper.COL4_NOTDONE, "0");
                         sqLiteDatabase.insertWithOnConflict(TodoListSQLHelper.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
                         //update the To-do task list UI
@@ -91,18 +95,18 @@ public class TodoActivity extends ListActivity {
             case R.id.action_resetValues:
 
                 String upCntSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
-                        " SET " + todoListSQLHelper.COL2_DONE + " = 0";
+                        " SET " + todoListSQLHelper.COL3_DONE + " = 0";
 
                 todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
                 SQLiteDatabase sqlDB = todoListSQLHelper.getWritableDatabase();
                 sqlDB.execSQL(upCntSql);
 
                 upCntSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
-                        " SET " + todoListSQLHelper.COL3_NOTDONE + " = 0";
+                        " SET " + todoListSQLHelper.COL4_NOTDONE + " = 0";
                 sqlDB.execSQL(upCntSql);
 
                 upCntSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
-                        " SET " + todoListSQLHelper.COL4_LASTOPERATION + " = ''";
+                        " SET " + todoListSQLHelper.COL5_LASTOPERATION + " = ''";
                 sqlDB.execSQL(upCntSql);
 
                 updateTodoList();
@@ -205,8 +209,8 @@ public class TodoActivity extends ListActivity {
 
         final Cursor cursor = sqLiteDatabase.query(TodoListSQLHelper.TABLE_NAME,
                 new String[]{todoListSQLHelper._ID, TodoListSQLHelper.COL1_TASK,
-                        TodoListSQLHelper.COL4_LASTOPERATION,TodoListSQLHelper.COL2_DONE,
-                        TodoListSQLHelper.COL3_NOTDONE
+                        TodoListSQLHelper.COL5_LASTOPERATION,TodoListSQLHelper.COL3_DONE,
+                        TodoListSQLHelper.COL4_NOTDONE
                 },
                 null,null,null,null,null);
 
@@ -219,7 +223,7 @@ public class TodoActivity extends ListActivity {
             public boolean setViewValue(View view, Cursor cursor1, int coloumnIndex){
                 if (view.getId() == R.id.todoTaskTV)
                 {
-                    int colid = cursor.getColumnIndex(TodoListSQLHelper.COL4_LASTOPERATION);
+                    int colid = cursor.getColumnIndex(TodoListSQLHelper.COL5_LASTOPERATION);
                     String status = cursor.getString(colid);
                     if (status != null) {
                         if(status.equals("done")){
@@ -232,12 +236,12 @@ public class TodoActivity extends ListActivity {
                         }
                     }
 
-                    int donecol = cursor.getColumnIndex(TodoListSQLHelper.COL2_DONE);
+                    int donecol = cursor.getColumnIndex(TodoListSQLHelper.COL3_DONE);
                     status = cursor.getString(donecol);
                     Button btnComp = (Button)((View)view.getParent().getParent()).findViewById(R.id.completeBtn);
                     btnComp.setText("Yes ("+status+")");
 
-                    int notdonecol = cursor.getColumnIndex(TodoListSQLHelper.COL3_NOTDONE);
+                    int notdonecol = cursor.getColumnIndex(TodoListSQLHelper.COL4_NOTDONE);
                     status = cursor.getString(notdonecol);
                     Button btnNotComp = (Button)((View)view.getParent().getParent()).findViewById(R.id.noCompleteBtn);
                     btnNotComp.setText("No ("+status+")");
@@ -250,6 +254,19 @@ public class TodoActivity extends ListActivity {
 
 
         this.setListAdapter(todoListAdapter);
+    }
+
+    public void onDetailButtonClick(View view)
+    {
+        //set the where clause with the id of the item selected.
+
+        View v = (View) view.getParent().getParent();
+
+        TextView todoTV = (TextView) v.findViewById(R.id.todoId);
+        String todoTaskId = todoTV.getText().toString();
+
+        whereClause = TodoListSQLHelper.COL2_TASKMAIN + " = " +todoTaskId;
+
     }
 
     public void onDoneButtonClick(View view){
@@ -276,7 +293,7 @@ public class TodoActivity extends ListActivity {
         //todo : udpate in the main todolist table with count
         //todo : update the color of the done operation in the table.
         String upCntDoneSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
-                " SET " + todoListSQLHelper.COL2_DONE + " = " + todoListSQLHelper.COL2_DONE + "+1" +
+                " SET " + todoListSQLHelper.COL3_DONE + " = " + todoListSQLHelper.COL3_DONE + "+1" +
                 " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem + "'";
 
         todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
@@ -284,7 +301,7 @@ public class TodoActivity extends ListActivity {
         sqlDB.execSQL(upCntDoneSql);
 
         String updateColor = "UPDATE " + todoListSQLHelper.TABLE_NAME +
-                " SET "+ todoListSQLHelper.COL4_LASTOPERATION + " = 'done'" +
+                " SET "+ todoListSQLHelper.COL5_LASTOPERATION + " = 'done'" +
                 " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem +"'";
         sqlDB.execSQL(updateColor);
 
@@ -322,7 +339,7 @@ public class TodoActivity extends ListActivity {
 
                 //update the database with not done
                 String upCntDoneSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
-                        " SET " + todoListSQLHelper.COL3_NOTDONE + " = " + todoListSQLHelper.COL3_NOTDONE + "+1" +
+                        " SET " + todoListSQLHelper.COL4_NOTDONE + " = " + todoListSQLHelper.COL4_NOTDONE + "+1" +
                         " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem + "'";
 
                 todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
@@ -330,7 +347,7 @@ public class TodoActivity extends ListActivity {
                 sqlDB.execSQL(upCntDoneSql);
 
                 String updateColor = "UPDATE " + todoListSQLHelper.TABLE_NAME +
-                        " SET "+ todoListSQLHelper.COL4_LASTOPERATION + " = 'notdone'" +
+                        " SET "+ todoListSQLHelper.COL5_LASTOPERATION + " = 'notdone'" +
                         " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem +"'";
                 sqlDB.execSQL(updateColor);
             }

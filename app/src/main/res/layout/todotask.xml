@@ -47,6 +47,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Details"
+            android:id="@+id/onDetailBtn"
+            android:onClick="onDetailButtonClick"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Del"
             android:id="@+id/DelBtn"
             android:onClick="onDelButtonClick" />
