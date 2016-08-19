@@ -23,6 +23,7 @@ import android.widget.ListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
+import java.util.*;
 import android.widget.Toast;
 
 
@@ -40,6 +41,7 @@ import java.io.OutputStreamWriter;
  */
 
 public class TodoActivity extends ListActivity {
+    Stack<String> st_taskmain;
     private ListAdapter todoListAdapter;
     private TodoListSQLHelper todoListSQLHelper;
     String whereClause,taskmain;
@@ -48,8 +50,10 @@ public class TodoActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
         verifyStoragePermissions(this);
+        st_taskmain = new Stack<String>();
         whereClause = null;
-        taskmain = "-1";
+        st_taskmain.push("-1");
+        taskmain = (String)st_taskmain.peek();
         updateTodoList();
     }
 
@@ -62,14 +66,18 @@ public class TodoActivity extends ListActivity {
     public void onBackPressed()
     {
         // todo need to implement stack for history element navigation.
+        taskmain = (String)st_taskmain.peek();
         if (taskmain.equals("-1")) {
-            Toast.makeText(getApplicationContext(), " taskmain = -1",Toast.LENGTH_LONG).show();
             super.onBackPressed();
         }
+        st_taskmain.pop();
 
-        whereClause = null;
-        taskmain = "-1";
-        updateTodoList();
+        if ( st_taskmain.empty() == false) {
+
+            taskmain = (String) st_taskmain.peek();
+            whereClause = TodoListSQLHelper.COL2_TASKMAIN + " = " + taskmain;
+            updateTodoList();
+        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item)
@@ -222,7 +230,8 @@ public class TodoActivity extends ListActivity {
         todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
         SQLiteDatabase sqLiteDatabase = todoListSQLHelper.getReadableDatabase();
 
-        if (whereClause==null) {
+        taskmain = (String)st_taskmain.peek();
+        if (taskmain.equals("-1") ) {
             whereClause = TodoListSQLHelper.COL2_TASKMAIN + " = '-1'";
         }
 
@@ -288,6 +297,7 @@ public class TodoActivity extends ListActivity {
 
         whereClause = TodoListSQLHelper.COL2_TASKMAIN + " = " +todoTaskId;
         //todo need to persist this taskmain in a file.
+        st_taskmain.push(todoTaskId);
         taskmain = todoTaskId;
 
         updateTodoList();
