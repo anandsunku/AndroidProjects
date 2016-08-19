@@ -42,13 +42,14 @@ import java.io.OutputStreamWriter;
 public class TodoActivity extends ListActivity {
     private ListAdapter todoListAdapter;
     private TodoListSQLHelper todoListSQLHelper;
-    String whereClause;
+    String whereClause,taskmain;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
         verifyStoragePermissions(this);
-        whereClause = "";
+        whereClause = null;
+        taskmain = "-1";
         updateTodoList();
     }
 
@@ -56,6 +57,19 @@ public class TodoActivity extends ListActivity {
     {
         getMenuInflater().inflate(R.layout.menu,menu);
         return true;
+    }
+
+    public void onBackPressed()
+    {
+        // todo need to implement stack for history element navigation.
+        if (taskmain.equals("-1")) {
+            Toast.makeText(getApplicationContext(), " taskmain = -1",Toast.LENGTH_LONG).show();
+            super.onBackPressed();
+        }
+
+        whereClause = null;
+        taskmain = "-1";
+        updateTodoList();
     }
 
     public boolean onOptionsItemSelected(MenuItem item)
@@ -80,6 +94,7 @@ public class TodoActivity extends ListActivity {
                         values.put(TodoListSQLHelper.COL1_TASK, todoTaskInput);
                         values.put(TodoListSQLHelper.COL3_DONE, "0");
                         values.put(TodoListSQLHelper.COL4_NOTDONE, "0");
+                        values.put(TodoListSQLHelper.COL2_TASKMAIN,taskmain);
                         sqLiteDatabase.insertWithOnConflict(TodoListSQLHelper.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
                         //update the To-do task list UI
@@ -207,12 +222,18 @@ public class TodoActivity extends ListActivity {
         todoListSQLHelper = new TodoListSQLHelper(TodoActivity.this);
         SQLiteDatabase sqLiteDatabase = todoListSQLHelper.getReadableDatabase();
 
+        if (whereClause==null) {
+            whereClause = TodoListSQLHelper.COL2_TASKMAIN + " = '-1'";
+        }
+
         final Cursor cursor = sqLiteDatabase.query(TodoListSQLHelper.TABLE_NAME,
                 new String[]{todoListSQLHelper._ID, TodoListSQLHelper.COL1_TASK,
                         TodoListSQLHelper.COL5_LASTOPERATION,TodoListSQLHelper.COL3_DONE,
                         TodoListSQLHelper.COL4_NOTDONE
                 },
-                null,null,null,null,null);
+                whereClause,null,null,null,null);
+
+
 
         todoListAdapter = new SimpleCursorAdapter(this,
                 R.layout.todotask,cursor, new String[]{TodoListSQLHelper.COL1_TASK,TodoListSQLHelper._ID},
@@ -266,7 +287,10 @@ public class TodoActivity extends ListActivity {
         String todoTaskId = todoTV.getText().toString();
 
         whereClause = TodoListSQLHelper.COL2_TASKMAIN + " = " +todoTaskId;
+        //todo need to persist this taskmain in a file.
+        taskmain = todoTaskId;
 
+        updateTodoList();
     }
 
     public void onDoneButtonClick(View view){
