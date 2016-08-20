@@ -11,15 +11,9 @@
         android:id="@+id/habitName"
         android:layout_weight="0.09" />
 
-    <!--<EditText-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:inputType="textPersonName"-->
-        <!--android:ems="10"-->
-        <!--android:id="@+id/editReason" />-->
     <AutoCompleteTextView
         android:id="@+id/editReason"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:text="">
@@ -33,7 +27,7 @@
         android:ems="10"
         android:maxLines="7"
         android:id="@+id/editNotReasonDetailText"
-        android:layout_weight="0.36"/>
+        android:layout_weight="0.28"/>
 
     <Button
         android:text="Update"
@@ -41,4 +35,16 @@
         android:layout_height="wrap_content"
         android:onClick="onUpdateButtonClick"
         android:id="@+id/update" />
+
+    <TextView
+        android:text="Top Reasons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:maxLines="7"
+        android:id="@+id/topReasons"
+        android:layout_weight="0.43" />
+
+
 </LinearLayout>

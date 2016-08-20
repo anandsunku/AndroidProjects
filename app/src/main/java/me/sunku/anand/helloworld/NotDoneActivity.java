@@ -48,6 +48,7 @@ public class NotDoneActivity extends Activity {
             String t1 = cur.getString(cur.getColumnIndex("ReasonTitle"));
             array.add(t1);
         }
+        cur.close();
 
         String[] reasonTitles = array.toArray(new String[0]);
 
@@ -56,6 +57,25 @@ public class NotDoneActivity extends Activity {
         actv.setThreshold(1);
         actv.setAdapter(adapter);
         actv.setTextColor(Color.RED);
+
+        // update the field "topReasons" with top reasons.
+        TextView tvReasons = (TextView)findViewById(R.id.topReasons);
+
+        String TopReasonQuery;
+        TopReasonQuery = "select ReasonTitle, count(*) AS count from NotDoneActivity where habitid='"+ taskid + "' group by ReasonTitle order by count desc";
+
+        Cursor cur1 = db.rawQuery(TopReasonQuery,new String[]{});
+        String disptext = "";
+
+        while (cur1.moveToNext()){
+            disptext += cur1.getString(cur1.getColumnIndex("ReasonTitle"));
+            disptext += " -> ";
+            disptext += cur1.getString(cur1.getColumnIndex("count"));
+            disptext += "\n ";
+        }
+        cur1.close();
+
+        tvReasons.setText(disptext);
     }
 
     public void onUpdateButtonClick(View view) {
