@@ -134,27 +134,27 @@ public class TodoActivity extends ListActivity {
                 updateTodoList();
                 return true;
 
-            case R.id.action_backup_db: // added for testing.
-                try {
-                    File myFile = new File("mnt/sdcard/file.txt");
-                    myFile.createNewFile();
-                    FileOutputStream fOut = new FileOutputStream(myFile);
-                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                    myOutWriter.append("test");
-                    myOutWriter.close();
-                    fOut.close();
+            case R.id.action_dellog_db:
 
-                    Toast.makeText(getApplicationContext(),"mnt/sdcard/file.txt" + " saved successfully !!",Toast.LENGTH_LONG).show();
 
-                }
-                catch (FileNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("you sure you want to delete log") .setTitle("delete log");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        SQLiteDatabase db;
+                        db = openOrCreateDatabase("me.sunku.anand.androidtodo", Context.MODE_PRIVATE,null);
+                        db.execSQL("DROP TABLE IF EXISTS NotDoneActivity");
+                        db.execSQL("DROP TABLE IF EXISTS DoneActivity");
+                        db.close();
+                        Toast.makeText(getApplicationContext(),"Log deleted successfully!!!",Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("No", null);
+
+                AlertDialog alert = builder.create();
+                alert.setTitle("Log delete");
+                alert.show();
+
                 return true;
             case R.id.action_backup_db_real:
                 File path=getApplicationContext().getDatabasePath("me.sunku.anand.androidtodo");
