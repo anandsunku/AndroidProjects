@@ -65,7 +65,6 @@ public class TodoActivity extends ListActivity {
 
     public void onBackPressed()
     {
-        // todo need to implement stack for history element navigation.
         taskmain = (String)st_taskmain.peek();
         if (taskmain.equals("-1")) {
             super.onBackPressed();
@@ -248,7 +247,6 @@ public class TodoActivity extends ListActivity {
                 R.layout.todotask,cursor, new String[]{TodoListSQLHelper.COL1_TASK,TodoListSQLHelper._ID},
                 new int[]{R.id.todoTaskTV,R.id.todoId},0);
 
-        // todo - update the color of the last operation.
         ((SimpleCursorAdapter)todoListAdapter).setViewBinder(new SimpleCursorAdapter.ViewBinder(){
             public boolean setViewValue(View view, Cursor cursor1, int coloumnIndex){
                 if (view.getId() == R.id.todoTaskTV)
@@ -324,8 +322,6 @@ public class TodoActivity extends ListActivity {
         db.execSQL(insertQueryStr);
 
 
-        //todo : udpate in the main todolist table with count
-        //todo : update the color of the done operation in the table.
         String upCntDoneSql = "UPDATE " + todoListSQLHelper.TABLE_NAME +
                 " SET " + todoListSQLHelper.COL3_DONE + " = " + todoListSQLHelper.COL3_DONE + "+1" +
                 " WHERE " + TodoListSQLHelper._ID + " = '" + todoTaskItem + "'";
@@ -352,8 +348,7 @@ public class TodoActivity extends ListActivity {
         TextView todoTVText = (TextView) v.findViewById(R.id.todoTaskTV);
         String todoTaskName = todoTVText.getText().toString();
 
-        //todo : update the not done operation color in the db.
-
+        // task status updated in OnActivityResult function.
         // i would like to show no done details page here.
         Intent i = new Intent(getApplicationContext(), NotDoneActivity.class);
         i.putExtra("id", todoTaskId);

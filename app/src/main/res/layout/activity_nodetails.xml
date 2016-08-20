@@ -11,20 +11,28 @@
         android:id="@+id/habitName"
         android:layout_weight="0.09" />
 
-    <EditText
-        android:layout_width="match_parent"
+    <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="textPersonName"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/editReason" />-->
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editReason"
-        android:layout_weight="0.09" />
+        android:text="">
+
+        <requestFocus />
+    </AutoCompleteTextView>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:maxLines="4"
+        android:maxLines="7"
         android:id="@+id/editNotReasonDetailText"
         android:layout_weight="0.36"/>
 
