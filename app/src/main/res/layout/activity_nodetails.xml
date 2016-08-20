@@ -18,12 +18,11 @@
         <!--android:ems="10"-->
         <!--android:id="@+id/editReason" />-->
     <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView1"
+        android:id="@+id/editReason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:text="">
-
         <requestFocus />
     </AutoCompleteTextView>
 

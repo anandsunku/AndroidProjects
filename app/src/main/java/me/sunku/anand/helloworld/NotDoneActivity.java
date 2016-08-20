@@ -3,10 +3,16 @@ package me.sunku.anand.helloworld;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import me.sunku.anand.helloworld.R;
 
@@ -33,6 +39,23 @@ public class NotDoneActivity extends Activity {
         db = openOrCreateDatabase("me.sunku.anand.androidtodo", Context.MODE_PRIVATE,null);
         db.execSQL("CREATE TABLE IF NOT EXISTS NotDoneActivity(habitid VARCHAR, " +
                 "habitname VARCHAR, ReasonTitle VARCHAR, ReasonDesc VARCHAR, TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP );");
+
+        //populate the reasons array with unique reasons from the database table.
+        String RTQuery = "SELECT DISTINCT ReasonTitle from NotDoneActivity where habitid='"+taskid+"'";
+        Cursor cur =  db.rawQuery(RTQuery,new String[]{});
+        ArrayList<String> array = new ArrayList<String>();
+        while (cur.moveToNext()){
+            String t1 = cur.getString(cur.getColumnIndex("ReasonTitle"));
+            array.add(t1);
+        }
+
+        String[] reasonTitles = array.toArray(new String[0]);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,reasonTitles);
+        AutoCompleteTextView actv = (AutoCompleteTextView)findViewById(R.id.editReason);
+        actv.setThreshold(1);
+        actv.setAdapter(adapter);
+        actv.setTextColor(Color.RED);
     }
 
     public void onUpdateButtonClick(View view) {
